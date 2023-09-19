@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.102.1" />
+    <PackageReference Include="MySql.Data" Version="8.0.33" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MISA.WEB05.CUKCUK.NAQUAN.Application\MISA.WEB05.CUKCUK.NAQUAN.Application.csproj" />
+    <ProjectReference Include="..\MISA.WEB05.CUKCUK.NAQUAN.Application\MISA.WEB05.CUKCUK.NAQUAN.Application.csproj" />
+    <ProjectReference Include="..\MISA.WEB05.CUKCUK.NAQUAN.Domain\MISA.WEB05.CUKCUK.NAQUAN.Domain.csproj" />
+    <ProjectReference Include="..\MISA.WEB05.CUKCUK.NAQUAN.Infrastructure\MISA.WEB05.CUKCUK.NAQUAN.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UploadFile\Images\Food\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+</Project>

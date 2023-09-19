@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "dv0UG27atPIR1sKpirKs+Ch5ZurOb2gum0sZX5MZxU2HDz5ZXyrX8VNu6vQAGzYEJi07hbZ+rVWlhqJjq9Nfrg==",
+  "success": true,
+  "projectFilePath": "/Users/mythee1407/Downloads/CukCuk-NAQUAN-main/CukCuk-BE-master/MISA.WEB05.CUKCUK.NAQUAN.Domain/MISA.WEB05.CUKCUK.NAQUAN.Domain.csproj",
+  "expectedPackageFiles": [
+    "/Users/mythee1407/.nuget/packages/microsoft.extensions.configuration.abstractions/7.0.0/microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",
+    "/Users/mythee1407/.nuget/packages/microsoft.extensions.primitives/7.0.0/microsoft.extensions.primitives.7.0.0.nupkg.sha512",
+    "/Users/mythee1407/.nuget/packages/mysqlconnector/2.2.5/mysqlconnector.2.2.5.nupkg.sha512",
+    "/Users/mythee1407/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

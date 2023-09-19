@@ -1,0 +1,92 @@
+.wrap-popup-add {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.215);
+    position: fixed;
+    z-index: 999999;
+    top: 0;
+    .ms-popup-add {
+        top: 50%;
+        left: 50%;
+        position: absolute;
+        min-width: 400px;
+        min-height: 200px;
+        background-color: #fff;
+        transform: translate(-50%, -50%);
+        border: 5px solid #0072bc!important;
+        border-radius: 4px;
+        z-index: 999999;
+        display: flex;
+        flex-direction: column;
+        .header-popup-add {
+            background-color: #0072bc;
+            width: 100%;
+            height: 20px;
+            color: white;
+            padding-left: 5px;
+            display: flex;
+            justify-content: space-between;
+            .title-popup-add {
+                font-size: 13px;
+                font-weight: 100;
+            }
+        }
+        .main-popup-add {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            padding: 5px;
+            .input-add {
+                display: flex;
+                width: 100%;
+                column-gap: 10px;
+                .title-input-add {
+                    width: 140px;
+                }
+                .input-add-value {
+                    flex: 1;
+                    height: 25px;
+                }
+            }
+            .input-add:not(:last-child) {
+                padding-bottom: 10px;
+            }
+        }
+    }
+    .function-popup-add {
+        height: 30px;
+        .wrap-function {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 5px;
+            padding-bottom: 5px;
+        }
+    }
+}
+
+.input-add-value input {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+    padding-left: 5px;
+    &:focus-visible {
+        border: 1px solid #4b9cd7 !important;
+        background-color: #fff !important;
+        outline: none;
+    }
+}
+
+.input-add-value textarea {
+    font-family: Tahoma;
+    min-width: 100%;
+    width: 100%;
+    border: 1px solid #ccc;
+    padding-left: 5px;
+    &:focus-visible {
+        border: 1px solid #4b9cd7 !important;
+        background-color: #fff !important;
+        outline: none;
+    }
+}

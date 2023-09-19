@@ -1,0 +1,434 @@
+// InsertFood
+
+if (FoodDetail.food == null) {
+    throw new ErrorException(devMsg: Resources.ExceptionInsert);
+}
+
+var isValid = ValidateObject(FoodDetail.food, FoodDetail.food.FoodID);
+if (isValid.ListErrors != null) {
+    return isValid;
+}
+
+var res = _FoodRepository.InsertFood(FoodDetail.food);
+if (Guid.Equals(res, Guid.Empty)) {
+    return new ValidateDto() {
+        StatusCode = 400,
+            ListErrors = new List < string > () { "0" }
+    };
+}
+
+if (FoodDetail.serviceHobbies != null && FoodDetail.serviceHobbies.Count > 0) {
+    foreach(var hobby in FoodDetail.serviceHobbies) {
+        if (!string.IsNullOrWhiteSpace(hobby.ServiceHobbyName)) {
+            hobby.FoodID = res;
+            _ServiceHobbyRepository.InsertServiceHobby(hobby);
+        }
+    }
+}
+
+return new ValidateDto() {
+    StatusCode = 201,
+        ListErrors = new List < string > () { "1" }
+};
+
+
+
+// Update food
+// Kiểm tra FoodDetail.food không null
+if (FoodDetail.food != null) {
+    var IsValid = ValidateObject(FoodDetail.food, FoodDetail.food.FoodID);
+    if (IsValid.ListErrors == null) {
+        var res = _FoodRepository.UpdateFood(FoodDetail.food); // Cập nhật thông tin món ăn
+        if (res > 0) {
+            // Xóa các dịch vụ liên quan đến món ăn
+            var deleteService = _ServiceHobbyRepository.DeleteServiceHobby(FoodDetail.food.FoodID);
+            if (deleteService >= 0) {
+                if (FoodDetail.serviceHobbies != null) {
+                    if (FoodDetail.serviceHobbies.Count > 0) {
+                        for (var i = 0; i < FoodDetail.serviceHobbies.Count; i++) {
+                            if (FoodDetail.serviceHobbies[i].ServiceHobbyName == null || string.IsNullOrWhiteSpace(FoodDetail.serviceHobbies[i].ServiceHobbyName)) {
+                                continue;
+                            } else {
+                                FoodDetail.serviceHobbies[i].FoodID = FoodDetail.food.FoodID;
+                                _ServiceHobbyRepository.InsertServiceHobby(FoodDetail.serviceHobbies[i]);
+                            }
+                        }
+                    }
+                }
+            } else {
+                throw new ErrorException(devMsg: Resources.ExceptionInsert);
+            }
+
+            return new ValidateDto() {
+                StatusCode = 200,
+                    ListErrors = new List < string > () { "1" }
+            };
+        } else {
+            return new ValidateDto() {
+                StatusCode = 400,
+                    ListErrors = new List < string > () { "0" }
+            };
+        }
+    } else {
+        return IsValid;
+    }
+} else {
+    throw new ErrorException(devMsg: Resources.ExceptionInsert);
+}
+
+
+// filter chưa tối ưu
+refreshData() {
+        this.Filters = [{
+                Property: "FoodCode",
+                Operator: Enum.operators.CONTAIN,
+                Value: null,
+                type: "string",
+            },
+            {
+                Property: "FoodName",
+                Operator: Enum.operators.CONTAIN,
+                Value: null,
+                type: "string",
+            },
+            {
+                Property: "MenuGroupName",
+                Operator: Enum.operators.CONTAIN,
+                Value: null,
+                type: "string",
+            },
+            {
+                Property: "FoodUnitName",
+                Operator: Enum.operators.CONTAIN,
+                Value: null,
+                type: "string",
+            },
+            {
+                Property: "FoodCost",
+                Operator: Enum.operators.LESS_OR_EQUAL,
+                Value: null,
+                type: "int",
+            },
+            {
+                Property: "FoodPrice",
+                Operator: Enum.operators.LESS_OR_EQUAL,
+                Value: null,
+                type: "int",
+            },
+            {
+                Property: "ShowOnMenu",
+                Operator: Enum.operators.EQUAL,
+                Value: null,
+                type: "boolean",
+            },
+            {
+                Property: "StopSelling",
+                Operator: Enum.operators.EQUAL,
+                Value: null,
+                type: "boolean",
+            },
+        ];
+        this.isContextMenuVisible = false;
+        this.filterData();
+    },
+
+
+    // Check list sở thích chưa tối ưu
+    checkAddListService() {
+        let checkService = false;
+        if (this.serviceHobbies != null && this.serviceHobbies.length > 0) {
+            for (var i = 0; i < this.serviceHobbies.length; i++) {
+                for (var j = i + 1; j < this.serviceHobbies.length; j++) {
+                    if (
+                        (this.serviceHobbies[i].ServiceHobbyName ==
+                            this.serviceHobbies[j].ServiceHobbyName &&
+                            this.serviceHobbies[i].AdditionalPayment ==
+                            this.serviceHobbies[j].AdditionalPayment &&
+                            this.serviceHobbies[i].AdditionalPayment != 0 &&
+                            this.serviceHobbies[j].AdditionalPayment != 0) ||
+                        (this.serviceHobbies[i].ServiceHobbyName ==
+                            this.serviceHobbies[j].ServiceHobbyName &&
+                            this.serviceHobbies[i].AdditionalPayment ==
+                            this.serviceHobbies[j].AdditionalPayment &&
+                            this.serviceHobbies[i].AdditionalPayment == 0 &&
+                            this.serviceHobbies[i].AdditionalPayment == 0 &&
+                            this.serviceHobbies[i].ServiceHobbyName.trim() !== "" &&
+                            this.serviceHobbies[j].ServiceHobbyName.trim() !== "")
+                    ) {
+                        checkService = true;
+                        this.serviceName = this.serviceHobbies[i].ServiceHobbyName;
+                        this.servicePrice = this.serviceHobbies[i].AdditionalPayment;
+                        break;
+                    }
+                }
+                if (checkService) {
+                    break;
+                }
+            }
+        }
+
+        return checkService;
+    },
+
+
+
+    /**
+    88 Validate đã được tối ưu
+    **/
+    validate() {
+        const requiredInputs = Array.from(document.querySelectorAll("input[required]"));
+        let hasEmptyValue = false;
+        const updatedErrorList = [];
+
+        requiredInputs.forEach(input => {
+            if (!input.value || input.value.trim() === "") {
+                hasEmptyValue = true;
+                updatedErrorList.push(input);
+            } else {
+                const index = updatedErrorList.indexOf(input);
+                if (index !== -1) {
+                    updatedErrorList.splice(index, 1);
+                }
+            }
+        });
+
+        this.errorList = updatedErrorList;
+
+        this.errorList.forEach(input => {
+            if (!input.hasAttribute("data-error-icon")) {
+                input.classList.add("input-error");
+                const errorIcon = document.createElement("div");
+                errorIcon.className = "icon-16 icon-form-error popup__input-error";
+
+                const popupGroupInput = input.closest(".popup__group__input");
+                if (popupGroupInput) {
+                    popupGroupInput.appendChild(errorIcon);
+                    input.setAttribute("data-error-icon", "true");
+                }
+
+                const titleInput = input.getAttribute("title-input");
+                if (titleInput) {
+                    errorIcon.setAttribute("title", `${titleInput} không được để trống!`);
+                }
+            }
+        });
+
+        const errorIconsToRemove = document.querySelectorAll(".icon-form-error");
+        errorIconsToRemove.forEach(icon => {
+            const input = icon.closest(".popup__group__input").querySelector("input");
+            if (!this.errorList.includes(input)) {
+                icon.remove();
+                input.removeAttribute("data-error-icon");
+                input.classList.remove("input-error");
+            }
+        });
+
+        return hasEmptyValue;
+    },
+
+
+    /**
+     * Validate chưa được tối ưu
+     * @param {object} obj
+     * @param {string} id
+     * @returns {object}
+     */
+
+    validate() {
+        const inputs = document.getElementsByTagName("input");
+        let hasEmptyValue = true;
+        // Lặp qua từng input để kiểm tra nếu input có thuộc tính "required"
+        for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].hasAttribute("required")) {
+                if (!inputs[i].value ||
+                    (inputs[i].value && inputs[i].value.trim() == "".trim())
+                ) {
+                    this.errorList.push(inputs[i]);
+                    this.errorList = [...new Set(this.errorList)];
+                    if (!inputs[i].hasAttribute("data-error-icon")) {
+                        // Kiểm tra nếu chưa có data-error-icon
+                        inputs[i].classList.add("input-error");
+                        const errorIcon = document.createElement("div");
+                        errorIcon.className =
+                            "icon-16 icon-form-error popup__input-error";
+                        const popupGroupInput = inputs[i].closest(".popup__group__input");
+                        if (popupGroupInput) {
+                            popupGroupInput.appendChild(errorIcon);
+                            inputs[i].setAttribute("data-error-icon", "true"); // Thêm thuộc tính data-error-icon để đánh dấu đã thêm div
+                        }
+                        const titleInput = inputs[i].getAttribute("title-input");
+                        if (titleInput) {
+                            errorIcon.setAttribute(
+                                "title",
+                                `${titleInput} không được để trống!`
+                            );
+                        }
+                    }
+                    hasEmptyValue = false;
+                } else {
+                    var index = this.errorList.indexOf(inputs[i]);
+                    if (index !== -1) {
+                        this.errorList.splice(index, 1);
+                    }
+                    const errorIcon = inputs[i]
+                        .closest(".popup__group__input")
+                        .querySelector(".icon-form-error");
+                    if (errorIcon) {
+                        errorIcon.remove();
+                        inputs[i].removeAttribute("data-error-icon"); // Xóa thuộc tính data-error-icon để đánh dấu đã xóa div
+                    }
+                    inputs[i].classList.remove("input-error");
+                }
+            }
+        }
+        return hasEmptyValue;
+    },
+
+
+    // Sử dụng khi muốn show form
+    this.showPopupFunc(Enum.typePopup.store);
+this.flagClose = 1;
+this.msgPopup = Sources.popupMsg.storeMsg;
+this.$emit("showForm", true);
+
+
+
+
+
+
+
+// Hàm thêm dữ liệu chưa tối ưu
+async handleStore() {
+        let res;
+        // Check validate
+        let check = this.validate();
+
+        // Check trùng mã
+        let checkCode = await this.checkDuplicateCodeFunc(
+            this.guidNull,
+            this.food.FoodCode
+        );
+
+        // Check Sở thích phục vụ trùng nhau
+        let checkService = this.checkAddListService();
+
+        // Check có thu thêm nhưng không có tên sở thích phục vụ
+        let checkNoNameService = this.checkNoNameService();
+
+        // Nếu không có lỗi
+        if (
+            check == true &&
+            checkService == false &&
+            checkNoNameService == false
+        ) {
+            // upload ảnh lên serve
+            if (this.fileImage) {
+                try {
+                    await this.uploadImage();
+                } catch (error) {
+                    this.showPopupFunc(Enum.typePopup.errors);
+                    this.msgPopup = error.response.data.userMsg;
+                    this.$emit("showForm", true);
+                    return;
+                }
+            }
+
+            // Định dạng lại tiền
+            this.food.FoodPrice = this.parseMoney(this.food.FoodPrice);
+            this.food.FoodCost = this.parseMoney(this.food.FoodCost);
+
+            // Định dạng lại checkbox
+            this.formatShowOnMenu();
+            this.formatStopSelling();
+
+            // Nếu là form thêm hoặc nhân bản
+            if (
+                this.formMode == Enum.formMode.add ||
+                this.formMode == Enum.formMode.clone
+            ) {
+                // Kiểm tra trùng mã
+                if (checkCode && checkCode.data == false) {
+                    try {
+                        res = await InsertFood(this.food, this.serviceHobbies);
+                        if (res.status == 201) {
+                            this.$emit("showForm", false);
+                            this.$emit("filterData");
+                            this.isServiceMenuVisible = false;
+                        }
+                    } catch (error) {
+                        this.showPopupFunc(Enum.typePopup.errors);
+                        this.msgPopup = Sources.errorsInput.vi.errorAll;
+                        this.$emit("showForm", true);
+                        return;
+                    }
+                } else if (checkCode && checkCode.data == true) {
+                    this.foodCode = this.food.FoodCode;
+                    this.showPopupFunc(Enum.typePopup.duplicate);
+                }
+            } else if (this.formMode == Enum.formMode.update) {
+                if (this.food.FoodCode != this.foodCodeOld) {
+                    if (checkCode.data == false) {
+                        if (this.food.FoodImageID != this.imageOld) {
+                            await deleteImageOld(this.imageOld);
+                        }
+                        res = await UpdateFood(
+                            this.foodID,
+                            this.food,
+                            this.serviceHobbies
+                        );
+                        if (res.status == 200) {
+                            this.$emit("showForm", false);
+                            this.$emit("filterData");
+                            this.isServiceMenuVisible = false;
+                        }
+                    } else {
+                        this.foodCode = this.food.FoodCode;
+                        this.showPopupFunc(Enum.typePopup.duplicate);
+                    }
+                } else {
+                    if (this.food.FoodImageID != this.imageOld) {
+                        await deleteImageOld(this.imageOld);
+                    }
+                    res = await UpdateFood(this.foodID, this.food, this.serviceHobbies);
+                    if (res.status == 200) {
+                        this.$emit("showForm", false);
+                        this.$emit("filterData");
+                    }
+                }
+            }
+        } else if (
+            check == false &&
+            checkService == false &&
+            checkNoNameService == false
+        ) {
+            this.general = true;
+            this.serviceHobby = false;
+            event.preventDefault();
+            if (this.errorList.length > 0) {
+                this.errorList[0].focus();
+            }
+        } else if (
+            check == true &&
+            checkService == true &&
+            checkNoNameService == false
+        ) {
+            this.showPopupFunc(Enum.typePopup.errorDuplicateService);
+            event.preventDefault();
+        } else if (
+            check == true &&
+            checkService == false &&
+            checkNoNameService == true
+        ) {
+            this.showPopupFunc(Enum.typePopup.errorImg);
+            this.msgPopup = Sources.popupMsg.serviceName;
+            event.preventDefault();
+        } else {
+            event.preventDefault();
+            this.showPopupFunc(Enum.typePopup.errorImg);
+            this.msgPopup = Sources.popupMsg.serviceName;
+            this.showPopupFunc(Enum.typePopup.errorDuplicateService);
+        }
+    },
+
+
+    // tôi muốn tạo một table

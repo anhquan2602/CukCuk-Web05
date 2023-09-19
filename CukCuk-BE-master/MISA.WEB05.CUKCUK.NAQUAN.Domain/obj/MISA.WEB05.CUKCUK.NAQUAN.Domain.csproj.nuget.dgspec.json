@@ -1,0 +1,71 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/mythee1407/Downloads/CukCuk-NAQUAN-main/CukCuk-BE-master/MISA.WEB05.CUKCUK.NAQUAN.Domain/MISA.WEB05.CUKCUK.NAQUAN.Domain.csproj": {}
+  },
+  "projects": {
+    "/Users/mythee1407/Downloads/CukCuk-NAQUAN-main/CukCuk-BE-master/MISA.WEB05.CUKCUK.NAQUAN.Domain/MISA.WEB05.CUKCUK.NAQUAN.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/mythee1407/Downloads/CukCuk-NAQUAN-main/CukCuk-BE-master/MISA.WEB05.CUKCUK.NAQUAN.Domain/MISA.WEB05.CUKCUK.NAQUAN.Domain.csproj",
+        "projectName": "MISA.WEB05.CUKCUK.NAQUAN.Domain",
+        "projectPath": "/Users/mythee1407/Downloads/CukCuk-NAQUAN-main/CukCuk-BE-master/MISA.WEB05.CUKCUK.NAQUAN.Domain/MISA.WEB05.CUKCUK.NAQUAN.Domain.csproj",
+        "packagesPath": "/Users/mythee1407/.nuget/packages/",
+        "outputPath": "/Users/mythee1407/Downloads/CukCuk-NAQUAN-main/CukCuk-BE-master/MISA.WEB05.CUKCUK.NAQUAN.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/mythee1407/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "MySqlConnector": {
+              "target": "Package",
+              "version": "[2.2.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.306/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
